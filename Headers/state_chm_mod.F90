@@ -1656,7 +1656,7 @@ CONTAINS
     ! Gan Luo et al wetdep fields
     !------------------------------------------------------------------
     ! After initialization overwrite fill value for pHCloud from 0.0_fp
-    State_Chm%pHCloud = 5.6_fp
+    State_Chm%pHRain = 5.6_fp
 
     IF ( Input_Opt%LWETD .or. Input_Opt%LCONV ) THEN
 
