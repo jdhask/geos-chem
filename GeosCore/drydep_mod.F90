@@ -406,9 +406,6 @@ CONTAINS
     INTEGER            :: I,   J,   L,   D,   N,  NDVZ,  A, S
     REAL(f8)           :: DVZ, THIK
     CHARACTER(LEN=255) :: ErrMsg,  ThisLoc
-#ifdef LUO_WETDEP	
-	REAL(f8) :: TC0   (State_Grid%NX,State_Grid%NY) ! Grid box sfc temp [K]
-#endif
 
     ! Objects
     TYPE(Species), POINTER :: SpcInfo
@@ -508,7 +505,7 @@ CONTAINS
                 DVZ = MAX( DVZ, DBLE( SpcInfo%DD_DvzMinVal(1) ) )
 #ifdef LUO_WETDEP
                 IF ( DBLE( SpcInfo%DD_DvzMinVal(1) ) > 0.0_fp ) THEN
-                IF ( TC0(I,J) < 253.0_fp ) THEN
+                IF ( State_Met%TS(I,J) < 253.0_fp ) THEN
                    DVZ = DBLE( SpcInfo%DD_DvzMinVal(1) )
                 ENDIF
                 ENDIF
@@ -1138,7 +1135,7 @@ CONTAINS
       REAL(f8) :: HSTAR3D(State_Grid%NX,State_Grid%NY,NUMDEP) ! Henry's law constant
       REAL(f8) :: TEMPAQ(State_Grid%NX,State_Grid%NY) ! TEMP for AQ
       REAL(f8) :: Hplus(State_Grid%NX,State_Grid%NY) ! Hplus for AQ
-	  INTEGER  :: LSNOW(State_Grid%NX,State_Grid%NY) ! Logical integer for snow and sea ice
+      INTEGER  :: LSNOW(State_Grid%NX,State_Grid%NY) ! Logical integer for snow and sea ice
       REAL(f8) :: HCSO2,HCH2O2,HCNH3,Ks1,Ks2 
 #endif
 
@@ -1227,6 +1224,7 @@ CONTAINS
     XLAI    => State_Met%XLAI
 #ifdef LUO_WETDEP
     LWI     => State_Met%LWI
+    LSNOW(I,J) = ( State_Met%ALBD(I,J) > 0.4 )
 #endif
     SpcInfo => NULL()
 
