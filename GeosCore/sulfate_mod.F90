@@ -3040,15 +3040,13 @@ CONTAINS
           ENDIF
 #else
           CL  = ( Spc(I,J,L,id_SALACL) * 0.7e+0_fp ) + &
-               Spc(I,J,L,id_SALCCL)          
+                  Spc(I,J,L,id_SALCCL)
 #endif
-     
           IF ( id_HCl > 0 ) THEN
-              CL = CL + Spc(I,J,L,id_HCL)
+             CL = CL + Spc(I,J,L,id_HCL)
           ELSE
-              CL = CL + GLOBAL_HCL(I,J,L)
+             CL = CL + GLOBAL_HCL(I,J,L)
           ENDIF
-
 
           ! Get total formic acid concentration [v/v]
           ! jmm (12/3/18)
