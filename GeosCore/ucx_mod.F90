@@ -146,8 +146,8 @@ MODULE UCX_MOD
   REAL(fp)             :: SLA_VA
   REAL(fp)             :: SLA_RR
   REAL(fp)             :: SLA_VR
-  REAL(fp), PARAMETER  :: NATMW   = 117.0
-  REAL(fp), PARAMETER  :: ICEMW   = 18.0
+  REAL(fp), PARAMETER  :: NATMW   = 117.0_fp
+  REAL(fp), PARAMETER  :: ICEMW   = 18.0_fp
   REAL(fp), PARAMETER  :: DENSNAT = 1626.e+0_fp
   REAL(fp), PARAMETER  :: DENSICE = 990.0e+0_fp
   REAL(fp), PARAMETER  :: ISR_ClNO3=1.e+0_fp/sqrt(97.46e+0_fp)
@@ -1769,7 +1769,7 @@ CONTAINS
     !$OMP PRIVATE( HBr_BOX_L,    HOBr_BOX_G,         HOBr_BOX_L    ) &
     !$OMP PRIVATE( H2SO4_BOX_L,  KHET_COMMON,        KHET_SPECIFIC ) &
     !$OMP PRIVATE( VOL_TOT,      BOX_LAT                           ) &
-    !$OMP SCHEDULE( DYNAMIC )
+    !$OMP SCHEDULE( DYNAMIC, 1                                     )
     DO L = 1, State_Grid%NZ
     DO J = 1, State_Grid%NY
     DO I = 1, State_Grid%NX
@@ -3676,8 +3676,12 @@ CONTAINS
        IF ( ABS(State_Grid%YMid(I,J)) <= 30 ) THEN
           ! Level with minimum temperature,
           ! use MASK to screen for >10 hPa
-          LEVCPT = MINLOC( State_Met%T(I,J,:), DIM=1, &
-                           MASK=(State_Met%PMID(I,J,:) >= 10) )
+          If (Input_Opt%LStaticH2OBC) Then
+             LEVCPT = MINLOC(ABS(State_Met%PMID(I,J,:) - 70), DIM=1)
+          Else
+             LEVCPT = MINLOC( State_Met%T(I,J,:), DIM=1, &
+                              MASK=(State_Met%PMID(I,J,:) >= 10) )
+          End If
        ELSE
           LEVCPT = -1
        ENDIF
